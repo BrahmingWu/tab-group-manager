@@ -1,0 +1,114 @@
+{
+  "extension_name": {
+    "message": "Tab Group Manager",
+    "description": "Name of the extension"
+  },
+  "extension_description": {
+    "message": "Automatically organize your tabs into groups based on domain, secondary domain, or custom rules. Features include auto-grouping, parent group inheritance, and keyboard shortcuts.",
+    "description": "Description of the extension"
+  },
+  "options_title": {
+    "message": "Tab Group Manager - Options",
+    "description": "Title of the options page"
+  },
+  "general_settings": {
+    "message": "General Settings",
+    "description": "Section heading for general settings"
+  },
+  "enable_auto_group": {
+    "message": "Enable Auto-Grouping",
+    "description": "Label for auto-grouping toggle"
+  },
+  "enable_auto_group_desc": {
+    "message": "Automatically group tabs when they are created or URL changes",
+    "description": "Description for auto-grouping toggle"
+  },
+  "minimum_tabs": {
+    "message": "Minimum Tabs to Group",
+    "description": "Label for minimum tabs input"
+  },
+  "minimum_tabs_desc": {
+    "message": "Minimum number of tabs with same domain before grouping",
+    "description": "Description for minimum tabs input"
+  },
+  "inherit_parent_group": {
+    "message": "New Tab Inherits Parent Group",
+    "description": "Label for inherit parent group toggle"
+  },
+  "inherit_parent_group_desc": {
+    "message": "When clicking a link in a grouped tab, new tab joins parent's group",
+    "description": "Description for inherit parent group toggle"
+  },
+  "grouping_strategy": {
+    "message": "Grouping Strategy",
+    "description": "Section heading for grouping strategy"
+  },
+  "strategy_domain": {
+    "message": "Domain",
+    "description": "Strategy name for domain grouping"
+  },
+  "strategy_domain_desc": {
+    "message": "Group by full domain (e.g., github.com, gitlab.com)",
+    "description": "Description for domain strategy"
+  },
+  "strategy_sec_domain": {
+    "message": "Secondary Domain",
+    "description": "Strategy name for secondary domain grouping"
+  },
+  "strategy_sec_domain_desc": {
+    "message": "Group by second-level domain (e.g., github.com from user.github.com)",
+    "description": "Description for secondary domain strategy"
+  },
+  "strategy_custom": {
+    "message": "Custom Rules",
+    "description": "Strategy name for custom rules"
+  },
+  "strategy_custom_desc": {
+    "message": "Define your own grouping rules with patterns",
+    "description": "Description for custom rules strategy"
+  },
+  "fallback_strategy": {
+    "message": "Fallback Strategy",
+    "description": "Label for fallback strategy select"
+  },
+  "fallback_strategy_desc": {
+    "message": "What to do when no rule matches",
+    "description": "Description for fallback strategy"
+  },
+  "fallback_none": {
+    "message": "Don't Group",
+    "description": "Fallback option: don't group"
+  },
+  "fallback_domain": {
+    "message": "Group by Domain",
+    "description": "Fallback option: group by domain"
+  },
+  "fallback_sec_domain": {
+    "message": "Group by Secondary Domain",
+    "description": "Fallback option: group by secondary domain"
+  },
+  "actions": {
+    "message": "Actions",
+    "description": "Section heading for action buttons"
+  },
+  "save_settings": {
+    "message": "Save Settings",
+    "description": "Button to save settings"
+  },
+  "reset_defaults": {
+    "message": "Reset to Defaults",
+    "description": "Button to reset settings to defaults"
+  },
+  "command_toggle_auto_group": {
+    "message": "Toggle auto-grouping on/off",
+    "description": "Command description for toggle auto-group"
+  },
+  "command_group_current": {
+    "message": "Group the current tab",
+    "description": "Command description for group current tab"
+  },
+  "command_ungroup_current": {
+    "message": "Ungroup the current tab",
+    "description": "Command description for ungroup current tab"
+  }
+}

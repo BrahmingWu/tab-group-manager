@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab Group Manager</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="popup-container">
+    <header class="popup-header">
+      <h1>Tab Group Manager</h1>
+    </header>
+
+    <section class="status-section">
+      <div class="status-row">
+        <span class="status-label">Auto-Group</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="auto-group-toggle" aria-label="Toggle auto-grouping">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Strategy</span>
+        <span class="status-value" id="strategy-display">—</span>
+      </div>
+    </section>
+
+    <section class="actions-section">
+      <button type="button" id="group-all-btn" class="btn btn-primary">
+        Group All Tabs Now
+      </button>
+    </section>
+
+    <footer class="popup-footer">
+      <a href="/options.html" target="_blank" class="options-link">
+        Open Options
+      </a>
+    </footer>
+  </main>
+
+  <script src="popup.js" type="module"></script>
+</body>
+</html>
