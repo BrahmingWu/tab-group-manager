@@ -31,6 +31,14 @@
     "message": "Minimum number of tabs with same domain before grouping",
     "description": "Description for minimum tabs input"
   },
+  "auto_ungroup": {
+    "message": "Auto Ungroup",
+    "description": "Label for auto ungroup toggle"
+  },
+  "auto_ungroup_desc": {
+    "message": "Automatically ungroup when tabs in a group fall below the minimum threshold",
+    "description": "Description for auto ungroup toggle"
+  },
   "inherit_parent_group": {
     "message": "New Tab Inherits Parent Group",
     "description": "Label for inherit parent group toggle"

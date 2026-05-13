@@ -60,6 +60,12 @@ body {
   border-bottom: none;
 }
 
+.setting-row.sub-setting {
+  padding-left: 16px;
+  border-left: 3px solid #e0e0e0;
+  margin-left: 8px;
+}
+
 .setting-row label:not(.toggle-switch) {
   display: flex;
   flex-direction: column;
@@ -417,4 +423,3 @@ body {
   border-radius: 6px;
   border: 1px solid #eee;
 }
-

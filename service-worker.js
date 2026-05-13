@@ -201,39 +201,39 @@ async function addTabsToGroup(
 /**
  * Handle tab creation - inherit parent group if enabled
  */
-chrome.tabs.onCreated.addListener(async (tab) => {
-  console.log("[TabGroupManager] Tab created:", tab.id, tab.url);
-
-  // Skip if no opener
-  if (!tab.openerTabId) return;
-
-  // Load config (service worker may have been terminated)
-  const config = await loadConfig();
-
-  // Check if inherit parent group is enabled
-  if (!config.inheritParentGroup) return;
-
-  try {
-    // Get the opener tab
-    const openerTab = await chrome.tabs.get(tab.openerTabId);
-
-    // Check if opener is in a group
-    if (openerTab.groupId === -1) {
-      console.log(
-        "[TabGroupManager] Opener tab is not in a group, skipping inherit",
-      );
-      return;
-    }
-
-    // Add new tab to the opener's group
-    await chrome.tabs.group({ tabIds: [tab.id], groupId: openerTab.groupId });
-    console.log(
-      `[TabGroupManager] Added tab ${tab.id} to group ${openerTab.groupId} (inherited from opener ${tab.openerTabId})`,
-    );
-  } catch (error) {
-    console.error("[TabGroupManager] Failed to inherit parent group:", error);
-  }
-});
+// chrome.tabs.onCreated.addListener(async (tab) => {
+//   console.log("[TabGroupManager] Tab created:", tab.id, tab.url);
+//
+//   // Skip if no opener
+//   if (!tab.openerTabId) return;
+//
+//   // Load config (service worker may have been terminated)
+//   const config = await loadConfig();
+//
+//   // Check if inherit parent group is enabled
+//   if (!config.inheritParentGroup) return;
+//
+//   try {
+//     // Get the opener tab
+//     const openerTab = await chrome.tabs.get(tab.openerTabId);
+//
+//     // Check if opener is in a group
+//     if (openerTab.groupId === -1) {
+//       console.log(
+//         "[TabGroupManager] Opener tab is not in a group, skipping inherit",
+//       );
+//       return;
+//     }
+//
+//     // Add new tab to the opener's group
+//     await chrome.tabs.group({ tabIds: [tab.id], groupId: openerTab.groupId });
+//     console.log(
+//       `[TabGroupManager] Added tab ${tab.id} to group ${openerTab.groupId} (inherited from opener ${tab.openerTabId})`,
+//     );
+//   } catch (error) {
+//     console.error("[TabGroupManager] Failed to inherit parent group:", error);
+//   }
+// });
 
 /**
  * Handle tab updates - auto-group based on URL changes
@@ -315,6 +315,31 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   // Check threshold
   if (totalTabs.length < config.groupTabNum) {
     console.log("[TabGroupManager] Below threshold, not grouping");
+
+    // Auto-ungroup: if tab already in a group, remove it then check remaining
+    if (config.autoUngroup && tab.groupId !== -1) {
+      try {
+        const oldGroupId = tab.groupId;
+        await chrome.tabs.ungroup(tabId);
+        console.log(
+          `[TabGroupManager] Ungrouped tab ${tabId} from group ${oldGroupId} (URL changed)`,
+        );
+
+        const stillInGroup = await chrome.tabs.query({ groupId: oldGroupId });
+        if (
+          stillInGroup.length > 0 &&
+          stillInGroup.length < config.groupTabNum
+        ) {
+          await chrome.tabs.ungroup(stillInGroup.map((t) => t.id));
+          console.log(
+            `[TabGroupManager] Auto-ungrouped group ${oldGroupId}: ${stillInGroup.length} tabs below threshold ${config.groupTabNum}`,
+          );
+        }
+      } catch (error) {
+        console.error("[TabGroupManager] Auto-ungroup error:", error);
+      }
+    }
+
     return;
   }
 
@@ -355,6 +380,37 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     console.error("[TabGroupManager] Error checking/creating group:", error);
     // Try to create group anyway
     await addTabsToGroup(totalTabs, groupTitle, groupColor, -1);
+  }
+});
+
+/**
+ * Handle tab removal - auto-ungroup groups that fall below threshold
+ */
+chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
+  if (removeInfo.isWindowClosing) return;
+
+  const config = await loadConfig();
+  if (!config.enableAutoGroup || !config.autoUngroup) return;
+
+  try {
+    const allGroups = await chrome.tabGroups.query({
+      windowId: removeInfo.windowId,
+    });
+
+    for (const group of allGroups) {
+      const tabsInGroup = await chrome.tabs.query({ groupId: group.id });
+      if (
+        tabsInGroup.length > 0 &&
+        tabsInGroup.length < config.groupTabNum
+      ) {
+        await chrome.tabs.ungroup(tabsInGroup.map((t) => t.id));
+        console.log(
+          `[TabGroupManager] Auto-ungrouped group ${group.id} "${group.title}": ${tabsInGroup.length} tabs below threshold ${config.groupTabNum}`,
+        );
+      }
+    }
+  } catch (error) {
+    console.error("[TabGroupManager] Auto-ungroup on tab remove error:", error);
   }
 });
 

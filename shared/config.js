@@ -1,6 +1,7 @@
 export const DEFAULT_CONFIG = {
   enableAutoGroup: true,
   groupTabNum: 1,
+  autoUngroup: false,
   groupStrategy: [1, 2, 3],
   inheritParentGroup: true,
   configuration: {
@@ -41,6 +42,10 @@ export function validateConfig(config) {
 
   if (typeof config.groupTabNum !== "number" || config.groupTabNum < 1) {
     errors.push("groupTabNum must be a number >= 1");
+  }
+
+  if (typeof config.autoUngroup !== "boolean") {
+    errors.push("autoUngroup must be a boolean");
   }
 
   if (!Array.isArray(config.groupStrategy)) {

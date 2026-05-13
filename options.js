@@ -20,6 +20,8 @@ function setupEventListeners() {
     .addEventListener("change", (e) => {
       const groupTabNumInput = document.getElementById("group-tab-num");
       groupTabNumInput.disabled = !e.target.checked;
+      const autoUngroupInput = document.getElementById("auto-ungroup");
+      autoUngroupInput.disabled = !e.target.checked;
     });
 
   const strategyList = document.getElementById("strategy-list");
@@ -75,6 +77,8 @@ function updateUI(config) {
   document.getElementById("enable-auto-group").checked = config.enableAutoGroup;
   document.getElementById("group-tab-num").value = config.groupTabNum;
   document.getElementById("group-tab-num").disabled = !config.enableAutoGroup;
+  document.getElementById("auto-ungroup").checked = config.autoUngroup || false;
+  document.getElementById("auto-ungroup").disabled = !config.enableAutoGroup;
   document.getElementById("inherit-parent-group").checked =
     config.inheritParentGroup;
 
@@ -267,6 +271,7 @@ async function saveConfig() {
   const config = {
     enableAutoGroup: document.getElementById("enable-auto-group").checked,
     groupTabNum: parseInt(document.getElementById("group-tab-num").value) || 1,
+    autoUngroup: document.getElementById("auto-ungroup").checked,
     inheritParentGroup: document.getElementById("inherit-parent-group").checked,
     groupStrategy: selectedStrategies,
     configuration: {
@@ -305,6 +310,7 @@ async function resetConfig() {
   const defaultConfig = {
     enableAutoGroup: true,
     groupTabNum: 1,
+    autoUngroup: false,
     groupStrategy: [1, 2, 3],
     inheritParentGroup: true,
     configuration: {
