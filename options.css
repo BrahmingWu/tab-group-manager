@@ -5,7 +5,9 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    sans-serif;
   font-size: 14px;
   line-height: 1.5;
   color: #333;
@@ -132,7 +134,7 @@ body {
 }
 
 .toggle-switch input:checked + .toggle-slider {
-  background-color: #4CAF50;
+  background-color: #4caf50;
 }
 
 .toggle-switch input:checked + .toggle-slider::before {
@@ -183,7 +185,7 @@ body {
 }
 
 .strategy-item.drag-over {
-  border-color: #4CAF50;
+  border-color: #4caf50;
   background: #f0f8f0;
 }
 
@@ -261,7 +263,7 @@ body {
 }
 
 .btn-primary {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
 }
 
@@ -407,3 +409,12 @@ body {
   background: #f8d7da;
   color: #721c24;
 }
+
+.settings-subsection {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 6px;
+  border: 1px solid #eee;
+}
+

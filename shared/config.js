@@ -5,11 +5,22 @@ export const DEFAULT_CONFIG = {
   inheritParentGroup: true,
   configuration: {
     fallback: "none",
-    rules: []
-  }
+    rules: [],
+    secDomainIgnoreTld: false,
+  },
 };
 
-const VALID_COLORS = ["grey", "blue", "red", "yellow", "green", "pink", "purple", "cyan", "orange"];
+const VALID_COLORS = [
+  "grey",
+  "blue",
+  "red",
+  "yellow",
+  "green",
+  "pink",
+  "purple",
+  "cyan",
+  "orange",
+];
 const VALID_FALLBACKS = ["none", "domain", "secDomain"];
 const VALID_MATCH_TYPES = ["domain", "url"];
 
@@ -53,7 +64,13 @@ export function validateConfig(config) {
     errors.push("configuration must be an object");
   } else {
     if (!VALID_FALLBACKS.includes(config.configuration.fallback)) {
-      errors.push(`configuration.fallback must be one of: ${VALID_FALLBACKS.join(", ")}`);
+      errors.push(
+        `configuration.fallback must be one of: ${VALID_FALLBACKS.join(", ")}`,
+      );
+    }
+
+    if (typeof config.configuration.secDomainIgnoreTld !== "boolean") {
+      errors.push("configuration.secDomainIgnoreTld must be a boolean");
     }
 
     if (!Array.isArray(config.configuration.rules)) {
@@ -66,30 +83,47 @@ export function validateConfig(config) {
         }
 
         if (typeof rule.name !== "string" || rule.name.trim() === "") {
-          errors.push(`configuration.rules[${index}].name must be a non-empty string`);
+          errors.push(
+            `configuration.rules[${index}].name must be a non-empty string`,
+          );
         }
 
         if (!VALID_COLORS.includes(rule.color)) {
-          errors.push(`configuration.rules[${index}].color must be one of: ${VALID_COLORS.join(", ")}`);
+          errors.push(
+            `configuration.rules[${index}].color must be one of: ${VALID_COLORS.join(", ")}`,
+          );
         }
 
         if (!Array.isArray(rule.patterns)) {
-          errors.push(`configuration.rules[${index}].patterns must be an array`);
+          errors.push(
+            `configuration.rules[${index}].patterns must be an array`,
+          );
         } else if (rule.patterns.length === 0) {
-          errors.push(`configuration.rules[${index}].patterns must not be empty`);
+          errors.push(
+            `configuration.rules[${index}].patterns must not be empty`,
+          );
         } else {
           rule.patterns.forEach((pattern, pIndex) => {
             if (!pattern || typeof pattern !== "object") {
-              errors.push(`configuration.rules[${index}].patterns[${pIndex}] must be an object`);
+              errors.push(
+                `configuration.rules[${index}].patterns[${pIndex}] must be an object`,
+              );
               return;
             }
 
-            if (typeof pattern.pattern !== "string" || pattern.pattern.trim() === "") {
-              errors.push(`configuration.rules[${index}].patterns[${pIndex}].pattern must be a non-empty string`);
+            if (
+              typeof pattern.pattern !== "string" ||
+              pattern.pattern.trim() === ""
+            ) {
+              errors.push(
+                `configuration.rules[${index}].patterns[${pIndex}].pattern must be a non-empty string`,
+              );
             }
 
             if (!VALID_MATCH_TYPES.includes(pattern.matchType)) {
-              errors.push(`configuration.rules[${index}].patterns[${pIndex}].matchType must be one of: ${VALID_MATCH_TYPES.join(", ")}`);
+              errors.push(
+                `configuration.rules[${index}].patterns[${pIndex}].matchType must be one of: ${VALID_MATCH_TYPES.join(", ")}`,
+              );
             }
           });
         }

@@ -2,10 +2,14 @@
  * Grouping strategy implementations following strategy pattern.
  */
 
-import { getDomain, getSecDomain, matchPattern } from './utils.js';
-import { getGroupKeyByConfig, getGroupTitleByConfig, getGroupColorByConfig } from './configuration.js';
+import { getDomain, getSecDomain, matchPattern, getSldOnly } from "./utils.js";
+import {
+  getGroupKeyByConfig,
+  getGroupTitleByConfig,
+  getGroupColorByConfig,
+} from "./configuration.js";
 
-const VALID_URL_SCHEMES = ['http:', 'https:'];
+const VALID_URL_SCHEMES = ["http:", "https:"];
 
 /**
  * Checks if a URL has a valid http/https scheme.
@@ -31,7 +35,7 @@ export const domainStrategy = {
   },
 
   getGroupTitle(tab) {
-    return getDomain(tab.url) || '';
+    return getDomain(tab.url) || "";
   },
 
   getGroupColor(tab) {
@@ -43,15 +47,15 @@ export const domainStrategy = {
     if (!domain) return [];
 
     const tabs = await chrome.tabs.query({ currentWindow: true });
-    return tabs.filter(t => {
+    return tabs.filter((t) => {
       const tDomain = getDomain(t.url);
       return tDomain === domain && t.id !== tab.id;
     });
   },
 
   getGroupKey(tab) {
-    return getDomain(tab.url) || '';
-  }
+    return getDomain(tab.url) || "";
+  },
 };
 
 /**
@@ -62,28 +66,32 @@ export const secDomainStrategy = {
     return isValidUrl(tab.url);
   },
 
-  getGroupTitle(tab) {
-    return getSecDomain(tab.url) || '';
+  getGroupTitle(tab, config) {
+    const sec = getSecDomain(tab.url);
+    if (!sec) return "";
+    return config?.configuration?.secDomainIgnoreTld ? getSldOnly(sec) : sec;
   },
 
   getGroupColor(tab) {
     return null;
   },
 
-  async querySameTabs(tab) {
-    const secDomain = getSecDomain(tab.url);
-    if (!secDomain) return [];
+  async querySameTabs(tab, config) {
+    const key = this.getGroupKey(tab, config);
+    if (!key) return [];
 
     const tabs = await chrome.tabs.query({ currentWindow: true });
-    return tabs.filter(t => {
-      const tSecDomain = getSecDomain(t.url);
-      return tSecDomain === secDomain && t.id !== tab.id;
+    return tabs.filter((t) => {
+      const tKey = this.getGroupKey(t, config);
+      return tKey === key && t.id !== tab.id;
     });
   },
 
-  getGroupKey(tab) {
-    return getSecDomain(tab.url) || '';
-  }
+  getGroupKey(tab, config) {
+    const sec = getSecDomain(tab.url);
+    if (!sec) return "";
+    return config?.configuration?.secDomainIgnoreTld ? getSldOnly(sec) : sec;
+  },
 };
 
 /**
@@ -107,7 +115,7 @@ export const customStrategy = {
     if (!groupTitle) return [];
 
     const tabs = await chrome.tabs.query({ currentWindow: true });
-    return tabs.filter(t => {
+    return tabs.filter((t) => {
       const tGroupTitle = getGroupTitleByConfig(t.url, userConfig);
       return tGroupTitle === groupTitle && t.id !== tab.id;
     });
@@ -115,7 +123,7 @@ export const customStrategy = {
 
   getGroupKey(tab, userConfig) {
     return getGroupKeyByConfig(tab.url, userConfig);
-  }
+  },
 };
 
 /**
@@ -140,7 +148,7 @@ export const noGroupStrategy = {
 
   getGroupKey() {
     return null;
-  }
+  },
 };
 
 /**
@@ -149,7 +157,7 @@ export const noGroupStrategy = {
 export const STRATEGY_MAP = {
   1: domainStrategy,
   2: secDomainStrategy,
-  3: customStrategy
+  3: customStrategy,
 };
 
 /**
@@ -159,11 +167,11 @@ export const STRATEGY_MAP = {
  */
 export function getFallbackStrategy(fallback) {
   switch (fallback) {
-    case 'domain':
+    case "domain":
       return domainStrategy;
-    case 'secDomain':
+    case "secDomain":
       return secDomainStrategy;
-    case 'none':
+    case "none":
     default:
       return noGroupStrategy;
   }

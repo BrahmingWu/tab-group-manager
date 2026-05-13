@@ -176,3 +176,16 @@ export function isValidUrl(url) {
     return false;
   }
 }
+
+/**
+ * Extracts the root/second-level domain without the top-level domain.
+ * e.g. "github.com" -> "github", "calendar-uk.co.uk" -> "calendar-uk.co"
+ * @param {string} secDomain - The full second-level domain string
+ * @returns {string} The root name (everything except the last dot-segment)
+ */
+export function getSldOnly(secDomain) {
+  if (!secDomain || !secDomain.includes('.')) return secDomain;
+  const parts = secDomain.split('.');
+  parts.pop(); // remove TLD
+  return parts.join('.') || secDomain;
+}
