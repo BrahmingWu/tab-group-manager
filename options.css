@@ -58,7 +58,7 @@ body {
   border-bottom: none;
 }
 
-.setting-row label {
+.setting-row label:not(.toggle-switch) {
   display: flex;
   flex-direction: column;
   gap: 2px;

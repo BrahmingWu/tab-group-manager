@@ -4,7 +4,7 @@
     "description": "Name of the extension"
   },
   "extension_description": {
-    "message": "Automatically organize tabs into groups by domain, custom rules, or patterns. Features auto-grouping, parent group inheritance, and keyboard shortcuts.",
+    "message": "Auto-group tabs by domain or custom rules. Parent tab inheritance and keyboard shortcuts included.",
     "description": "Description of the extension"
   },
   "options_title": {
