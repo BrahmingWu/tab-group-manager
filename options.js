@@ -1,8 +1,5 @@
-const STRATEGY_LABELS = {
-  1: "Domain",
-  2: "Secondary Domain",
-  3: "Custom Rules",
-};
+import { STRATEGY_LABELS } from "../core/constants.js";
+import { Msg, sendMessage } from "../core/messaging.js";
 
 let currentConfig = null;
 let rules = [];
@@ -65,7 +62,7 @@ function setupEventListeners() {
 
 async function loadConfig() {
   try {
-    const response = await sendMessage({ type: "GET_CONFIG" });
+    const response = await sendMessage({ type: Msg.GET_CONFIG });
     currentConfig = response.config;
     updateUI(currentConfig);
   } catch (error) {
@@ -296,7 +293,7 @@ async function saveConfig() {
   }
 
   try {
-    await sendMessage({ type: "SET_CONFIG", config });
+    await sendMessage({ type: Msg.SET_CONFIG, config });
     currentConfig = config;
     showStatus("Settings saved successfully", "success");
   } catch (error) {
@@ -321,7 +318,7 @@ async function resetConfig() {
   };
 
   try {
-    await sendMessage({ type: "SET_CONFIG", config: defaultConfig });
+    await sendMessage({ type: Msg.SET_CONFIG, config: defaultConfig });
     currentConfig = defaultConfig;
     updateUI(currentConfig);
     showStatus("Settings reset to defaults", "success");
@@ -338,18 +335,6 @@ function showStatus(message, type) {
   setTimeout(() => {
     statusEl.className = "status-message";
   }, 3000);
-}
-
-function sendMessage(message) {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(message, (response) => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError.message));
-      } else {
-        resolve(response);
-      }
-    });
-  });
 }
 
 function escapeHtml(text) {

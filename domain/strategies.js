@@ -1,36 +1,12 @@
-/**
- * Grouping strategy implementations following strategy pattern.
- */
-
-import { getDomain, getSecDomain, matchPattern, getSldOnly } from "./utils.js";
+import { getDomain, getSecDomain, matchPattern, getSldOnly, isValidUrl } from "./utils.js";
 import {
   getGroupKeyByConfig,
   getGroupTitleByConfig,
   getGroupColorByConfig,
-} from "./configuration.js";
+} from "./rule-engine.js";
 
-const VALID_URL_SCHEMES = ["http:", "https:"];
-
-/**
- * Checks if a URL has a valid http/https scheme.
- * @param {string} url - The URL to check
- * @returns {boolean}
- */
-function isValidUrl(url) {
-  if (!url) return false;
-  try {
-    const parsed = new URL(url);
-    return VALID_URL_SCHEMES.includes(parsed.protocol);
-  } catch {
-    return false;
-  }
-}
-
-/**
- * domainStrategy - Groups tabs by full domain
- */
 export const domainStrategy = {
-  shouldGroup(changeInfo, tab) {
+  shouldGroup(_changeInfo, tab) {
     return isValidUrl(tab.url);
   },
 
@@ -38,7 +14,7 @@ export const domainStrategy = {
     return getDomain(tab.url) || "";
   },
 
-  getGroupColor(tab) {
+  getGroupColor(_tab) {
     return null;
   },
 
@@ -58,11 +34,8 @@ export const domainStrategy = {
   },
 };
 
-/**
- * secDomainStrategy - Groups tabs by second-level domain
- */
 export const secDomainStrategy = {
-  shouldGroup(changeInfo, tab) {
+  shouldGroup(_changeInfo, tab) {
     return isValidUrl(tab.url);
   },
 
@@ -72,7 +45,7 @@ export const secDomainStrategy = {
     return config?.configuration?.secDomainIgnoreTld ? getSldOnly(sec) : sec;
   },
 
-  getGroupColor(tab) {
+  getGroupColor(_tab) {
     return null;
   },
 
@@ -94,11 +67,8 @@ export const secDomainStrategy = {
   },
 };
 
-/**
- * customStrategy - Groups tabs by user-defined rules
- */
 export const customStrategy = {
-  shouldGroup(changeInfo, tab) {
+  shouldGroup(_changeInfo, tab) {
     return isValidUrl(tab.url);
   },
 
@@ -111,13 +81,13 @@ export const customStrategy = {
   },
 
   async querySameTabs(tab, userConfig) {
-    const groupTitle = getGroupTitleByConfig(tab.url, userConfig);
-    if (!groupTitle) return [];
+    const key = this.getGroupKey(tab, userConfig);
+    if (!key) return [];
 
     const tabs = await chrome.tabs.query({ currentWindow: true });
     return tabs.filter((t) => {
-      const tGroupTitle = getGroupTitleByConfig(t.url, userConfig);
-      return tGroupTitle === groupTitle && t.id !== tab.id;
+      const tKey = this.getGroupKey(t, userConfig);
+      return tKey === key && t.id !== tab.id;
     });
   },
 
@@ -126,16 +96,13 @@ export const customStrategy = {
   },
 };
 
-/**
- * noGroupStrategy - Never groups (for fallback "none")
- */
 export const noGroupStrategy = {
   shouldGroup() {
     return false;
   },
 
   getGroupTitle() {
-    return null;
+    return "";
   },
 
   getGroupColor() {
@@ -147,31 +114,22 @@ export const noGroupStrategy = {
   },
 
   getGroupKey() {
-    return null;
+    return "";
   },
 };
 
-/**
- * Strategy map by group strategy number
- */
 export const STRATEGY_MAP = {
   1: domainStrategy,
   2: secDomainStrategy,
   3: customStrategy,
 };
 
-/**
- * Get fallback strategy based on fallback mode
- * @param {string} fallback - Fallback mode ('none', 'domain', 'secDomain')
- * @returns {object} The fallback strategy
- */
 export function getFallbackStrategy(fallback) {
   switch (fallback) {
     case "domain":
       return domainStrategy;
     case "secDomain":
       return secDomainStrategy;
-    case "none":
     default:
       return noGroupStrategy;
   }

@@ -1,9 +1,4 @@
-import { getDomain } from './utils.js';
-
-export const defaultConfiguration = {
-  fallback: "none",
-  rules: [],
-};
+import { getDomain } from "./utils.js";
 
 export function getGroupKeyByConfig(url, configuration) {
   const domain = getDomain(url);
@@ -12,8 +7,8 @@ export function getGroupKeyByConfig(url, configuration) {
     const patterns = rule?.patterns || [];
     for (const obj of patterns) {
       if (obj?.pattern) {
-        const matchType = obj.matchType || 'domain';
-        const matchTarget = matchType === 'url' ? url : domain;
+        const matchType = obj.matchType || "domain";
+        const matchTarget = matchType === "url" ? url : domain;
 
         if (matchTarget && isExpressionMatched(matchTarget, obj.pattern)) {
           return rule.name;
@@ -35,8 +30,8 @@ export function getGroupColorByConfig(url, configuration) {
     const patterns = rule?.patterns || [];
     for (const obj of patterns) {
       if (obj?.pattern) {
-        const matchType = obj.matchType || 'domain';
-        const matchTarget = matchType === 'url' ? url : domain;
+        const matchType = obj.matchType || "domain";
+        const matchTarget = matchType === "url" ? url : domain;
 
         if (matchTarget && isExpressionMatched(matchTarget, obj.pattern)) {
           return rule.color || "grey";
@@ -48,8 +43,8 @@ export function getGroupColorByConfig(url, configuration) {
 }
 
 function isExpressionMatched(matchTarget, expression) {
-  const escaped = expression.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
-  const regexPattern = escaped.replace(/\*/g, '.*');
+  const escaped = expression.replace(/[.+?^${}()|[\]\\]/g, "\\$&");
+  const regexPattern = escaped.replace(/\*/g, ".*");
   const regex = new RegExp(`^${regexPattern}$`);
   return regex.test(matchTarget);
 }

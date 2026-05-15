@@ -1,3 +1,5 @@
+import { COLORS, VALID_FALLBACKS, VALID_MATCH_TYPES } from "../core/constants.js";
+
 export const DEFAULT_CONFIG = {
   enableAutoGroup: true,
   groupTabNum: 1,
@@ -10,20 +12,6 @@ export const DEFAULT_CONFIG = {
     secDomainIgnoreTld: false,
   },
 };
-
-const VALID_COLORS = [
-  "grey",
-  "blue",
-  "red",
-  "yellow",
-  "green",
-  "pink",
-  "purple",
-  "cyan",
-  "orange",
-];
-const VALID_FALLBACKS = ["none", "domain", "secDomain"];
-const VALID_MATCH_TYPES = ["domain", "url"];
 
 export function getDefaultConfig() {
   return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
@@ -93,19 +81,15 @@ export function validateConfig(config) {
           );
         }
 
-        if (!VALID_COLORS.includes(rule.color)) {
+        if (rule.color && !COLORS.includes(rule.color)) {
           errors.push(
-            `configuration.rules[${index}].color must be one of: ${VALID_COLORS.join(", ")}`,
+            `configuration.rules[${index}].color must be one of: ${COLORS.join(", ")}`,
           );
         }
 
         if (!Array.isArray(rule.patterns)) {
           errors.push(
             `configuration.rules[${index}].patterns must be an array`,
-          );
-        } else if (rule.patterns.length === 0) {
-          errors.push(
-            `configuration.rules[${index}].patterns must not be empty`,
           );
         } else {
           rule.patterns.forEach((pattern, pIndex) => {
@@ -125,10 +109,12 @@ export function validateConfig(config) {
               );
             }
 
-            if (!VALID_MATCH_TYPES.includes(pattern.matchType)) {
-              errors.push(
-                `configuration.rules[${index}].patterns[${pIndex}].matchType must be one of: ${VALID_MATCH_TYPES.join(", ")}`,
-              );
+            if (pattern.matchType) {
+              if (!VALID_MATCH_TYPES.includes(pattern.matchType)) {
+                errors.push(
+                  `configuration.rules[${index}].patterns[${pIndex}].matchType must be one of: ${VALID_MATCH_TYPES.join(", ")}`,
+                );
+              }
             }
           });
         }
@@ -136,29 +122,19 @@ export function validateConfig(config) {
     }
   }
 
-  return { valid: errors.length === 0, errors };
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
 }
 
-export function mergeConfig(saved, defaults) {
-  if (saved === null || typeof saved !== "object" || Array.isArray(saved)) {
-    return JSON.parse(JSON.stringify(defaults));
-  }
-
-  const merged = JSON.parse(JSON.stringify(saved));
-
-  for (const key in defaults) {
-    if (Object.prototype.hasOwnProperty.call(defaults, key)) {
-      if (merged[key] === undefined) {
-        merged[key] = JSON.parse(JSON.stringify(defaults[key]));
-      } else if (
-        typeof defaults[key] === "object" &&
-        defaults[key] !== null &&
-        !Array.isArray(defaults[key])
-      ) {
-        merged[key] = mergeConfig(merged[key], defaults[key]);
-      }
-    }
-  }
-
-  return merged;
+export function mergeConfig(base, overrides) {
+  return {
+    ...base,
+    ...overrides,
+    configuration: {
+      ...base.configuration,
+      ...(overrides.configuration || {}),
+    },
+  };
 }
