@@ -8,7 +8,7 @@ Automatically organize your Chrome tabs into groups by domain, secondary domain,
 
 ### Chrome Web Store
 
-[Available on Chrome Web Store](#) <!-- TODO: add link after publishing -->
+[Available on Chrome Web Store](https://chromewebstore.google.com/detail/tab-group-manager/mnpheifddahmlaahggmpklbmihkjenhj)
 
 ### Manual (Developer Mode)
 
