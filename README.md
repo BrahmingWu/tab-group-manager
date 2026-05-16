@@ -105,8 +105,6 @@ options/      → Settings page UI
 
 Layer rules: `core/` shared by all layers. `domain/` pure functions (Chrome API only in `querySameTabs`). `background/` consumes Chrome APIs. UI communicates via `chrome.runtime.sendMessage`.
 
-See [AGENTS.md](./AGENTS.md) for full architecture docs.
-
 ## Development
 
 ```bash
@@ -122,4 +120,4 @@ cd tab-group-manager
 
 ## Contributing
 
-Bug reports and feature requests welcome via GitHub Issues. PRs should follow the layer conventions documented in [AGENTS.md](./AGENTS.md).
+Bug reports and feature requests welcome via GitHub Issues.
