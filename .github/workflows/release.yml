@@ -25,7 +25,7 @@ jobs:
       - name: Build and Package Extension
         run: |
           zip -r tab-group-manager-v${{ steps.version.outputs.VERSION }}.zip \
-            _locales/
+            _locales/ \
             background/ \
             core/ \
             domain/ \
