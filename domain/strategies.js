@@ -73,11 +73,11 @@ export const customStrategy = {
   },
 
   getGroupTitle(tab, userConfig) {
-    return getGroupTitleByConfig(tab.url, userConfig);
+    return getGroupTitleByConfig(tab.url, userConfig?.configuration);
   },
 
   getGroupColor(tab, userConfig) {
-    return getGroupColorByConfig(tab.url, userConfig);
+    return getGroupColorByConfig(tab.url, userConfig?.configuration);
   },
 
   async querySameTabs(tab, userConfig) {
@@ -92,7 +92,7 @@ export const customStrategy = {
   },
 
   getGroupKey(tab, userConfig) {
-    return getGroupKeyByConfig(tab.url, userConfig);
+    return getGroupKeyByConfig(tab.url, userConfig?.configuration);
   },
 };
 
