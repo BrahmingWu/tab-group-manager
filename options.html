@@ -79,76 +79,97 @@
         </div>
 
         <div class="strategy-list" id="strategy-list">
-          <div class="strategy-item" draggable="true" data-strategy="1">
-            <span class="drag-handle">⋮⋮</span>
-            <input
-              type="checkbox"
-              class="strategy-checkbox"
-              value="1"
-              id="strategy-1"
-            />
-            <label for="strategy-1" class="strategy-content">
-              <span class="strategy-label">Domain</span>
-              <span class="strategy-desc"
-                >Group by full domain (e.g., github.com, gitlab.com)</span
+          <div class="strategy-item" draggable="true" data-strategy="domain">
+            <div class="strategy-item-row">
+              <span class="drag-handle">⋮⋮</span>
+              <input
+                type="checkbox"
+                class="strategy-checkbox"
+                value="domain"
+                id="strategy-domain"
+              />
+              <label for="strategy-domain" class="strategy-content">
+                <span class="strategy-label">By Domain</span>
+                <span class="strategy-desc"
+                  >Group tabs by domain name for automatic grouping</span
+                >
+              </label>
+            </div>
+            <div class="strategy-sub-options" id="domain-sub-options">
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  name="domain-type"
+                  value="full"
+                  id="domain-type-full"
+                />
+                <div class="radio-content">
+                  <span class="radio-label">Full Domain</span>
+                  <span class="radio-desc"
+                    >Group by complete domain (e.g. github.com,
+                    gitlab.com)</span
+                  >
+                </div>
+              </label>
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  name="domain-type"
+                  value="secDomain"
+                  id="domain-type-secDomain"
+                />
+                <div class="radio-content">
+                  <span class="radio-label">Secondary Domain</span>
+                  <span class="radio-desc"
+                    >Group by second-level domain (e.g. github.com from
+                    user.github.com)</span
+                  >
+                </div>
+              </label>
+              <div
+                id="sec-domain-options"
+                class="settings-subsection"
+                style="display: none"
               >
-            </label>
+                <div class="setting-row">
+                  <label for="sec-domain-ignore-tld">
+                    <span class="setting-label"
+                      >Group by root name only (ignore TLD)</span
+                    >
+                    <span class="setting-desc"
+                      >e.g. github.com and github.io will be grouped as
+                      "github"</span
+                    >
+                  </label>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="sec-domain-ignore-tld" />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="strategy-item" draggable="true" data-strategy="2">
-            <span class="drag-handle">⋮⋮</span>
-            <input
-              type="checkbox"
-              class="strategy-checkbox"
-              value="2"
-              id="strategy-2"
-            />
-            <label for="strategy-2" class="strategy-content">
-              <span class="strategy-label">Secondary Domain</span>
-              <span class="strategy-desc"
-                >Group by second-level domain (e.g., github.com from
-                user.github.com)</span
-              >
-            </label>
-          </div>
-
-          <div class="strategy-item" draggable="true" data-strategy="3">
-            <span class="drag-handle">⋮⋮</span>
-            <input
-              type="checkbox"
-              class="strategy-checkbox"
-              value="3"
-              id="strategy-3"
-            />
-            <label for="strategy-3" class="strategy-content">
-              <span class="strategy-label">Custom Rules</span>
-              <span class="strategy-desc"
-                >Define your own grouping rules with patterns</span
-              >
-            </label>
+          <div class="strategy-item" draggable="true" data-strategy="custom">
+            <div class="strategy-item-row">
+              <span class="drag-handle">⋮⋮</span>
+              <input
+                type="checkbox"
+                class="strategy-checkbox"
+                value="custom"
+                id="strategy-custom"
+              />
+              <label for="strategy-custom" class="strategy-content">
+                <span class="strategy-label">Custom Rules</span>
+                <span class="strategy-desc"
+                  >Define your own grouping rules with patterns</span
+                >
+              </label>
+            </div>
           </div>
         </div>
       </section>
-      <div
-        id="sec-domain-options"
-        class="settings-subsection"
-        style="display: none"
-      >
-        <div class="setting-row">
-          <label for="sec-domain-ignore-tld">
-            <span class="setting-label"
-              >Group by root name only (ignore TLD)</span
-            >
-            <span class="setting-desc"
-              >e.g. github.com and github.io will be grouped as "github"</span
-            >
-          </label>
-          <label class="toggle-switch">
-            <input type="checkbox" id="sec-domain-ignore-tld" />
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-      </div>
+
       <section
         class="settings-section"
         id="custom-rules-section"

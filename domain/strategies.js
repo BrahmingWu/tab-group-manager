@@ -96,6 +96,38 @@ export const customStrategy = {
   },
 };
 
+/**
+ * Domain grouping strategy — delegates to full domain or secondary domain
+ * based on config.configuration.domainType.
+ */
+export const domainGroupStrategy = {
+  shouldGroup(_changeInfo, tab) {
+    return isValidUrl(tab.url);
+  },
+
+  _impl(config) {
+    return config?.configuration?.domainType === "secDomain"
+      ? secDomainStrategy
+      : domainStrategy;
+  },
+
+  getGroupTitle(tab, config) {
+    return this._impl(config).getGroupTitle(tab, config);
+  },
+
+  getGroupColor(tab, config) {
+    return this._impl(config).getGroupColor(tab, config);
+  },
+
+  async querySameTabs(tab, config) {
+    return this._impl(config).querySameTabs(tab, config);
+  },
+
+  getGroupKey(tab, config) {
+    return this._impl(config).getGroupKey(tab, config);
+  },
+};
+
 export const noGroupStrategy = {
   shouldGroup() {
     return false;
@@ -119,9 +151,8 @@ export const noGroupStrategy = {
 };
 
 export const STRATEGY_MAP = {
-  1: domainStrategy,
-  2: secDomainStrategy,
-  3: customStrategy,
+  "domain": domainGroupStrategy,
+  "custom": customStrategy,
 };
 
 export function getFallbackStrategy(fallback) {

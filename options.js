@@ -34,15 +34,23 @@ function setupEventListeners() {
 
   document.querySelectorAll(".strategy-checkbox").forEach((checkbox) => {
     checkbox.addEventListener("change", (e) => {
+      const domainSubOptions = document.getElementById("domain-sub-options");
       const customSection = document.getElementById("custom-rules-section");
-      const customCheckbox = document.getElementById("strategy-3");
-      customSection.style.display = customCheckbox.checked ? "block" : "none";
 
+      if (e.target.id === "strategy-domain") {
+        domainSubOptions.style.display = e.target.checked ? "block" : "none";
+      }
+      if (e.target.id === "strategy-custom") {
+        customSection.style.display = e.target.checked ? "block" : "none";
+      }
+    });
+  });
+
+  document.querySelectorAll('input[name="domain-type"]').forEach((radio) => {
+    radio.addEventListener("change", (e) => {
       const secDomainOptions = document.getElementById("sec-domain-options");
-      const secDomainCheckbox = document.getElementById("strategy-2");
-      secDomainOptions.style.display = secDomainCheckbox.checked
-        ? "block"
-        : "none";
+      secDomainOptions.style.display =
+        e.target.value === "secDomain" ? "block" : "none";
     });
   });
 
@@ -79,14 +87,37 @@ function updateUI(config) {
   document.getElementById("inherit-parent-group").checked =
     config.inheritParentGroup;
 
+  // Strategy checkboxes (string values)
   const strategyCheckboxes = document.querySelectorAll(".strategy-checkbox");
   strategyCheckboxes.forEach((checkbox) => {
-    checkbox.checked = config.groupStrategy.includes(parseInt(checkbox.value));
+    checkbox.checked = config.groupStrategy.includes(checkbox.value);
   });
 
+  // Domain sub-options visibility
+  const domainSubOptions = document.getElementById("domain-sub-options");
+  domainSubOptions.style.display = config.groupStrategy.includes("domain")
+    ? "block"
+    : "none";
+
+  // Domain type radio
+  const domainType = config.configuration?.domainType || "full";
+  const domainTypeRadio = document.querySelector(
+    `input[name="domain-type"][value="${domainType}"]`
+  );
+  if (domainTypeRadio) domainTypeRadio.checked = true;
+
+  // Sec-domain ignore TLD toggle (only when domain is enabled AND type is secDomain)
+  const secDomainOptions = document.getElementById("sec-domain-options");
+  secDomainOptions.style.display =
+    config.groupStrategy.includes("domain") && domainType === "secDomain"
+      ? "block"
+      : "none";
+
+  // Custom rules section visibility
   const customSection = document.getElementById("custom-rules-section");
-  const customCheckbox = document.getElementById("strategy-3");
-  customSection.style.display = customCheckbox.checked ? "block" : "none";
+  customSection.style.display = config.groupStrategy.includes("custom")
+    ? "block"
+    : "none";
 
   if (config.configuration) {
     document.getElementById("fallback-strategy").value =
@@ -98,11 +129,6 @@ function updateUI(config) {
     rules = [];
     document.getElementById("sec-domain-ignore-tld").checked = false;
   }
-  // Secondary domain options visibility (depends on strategy 2 being enabled)
-  const secDomainOptions = document.getElementById("sec-domain-options");
-  secDomainOptions.style.display = config.groupStrategy.includes(2)
-    ? "block"
-    : "none";
 
   renderRules();
 }
@@ -256,7 +282,7 @@ async function saveConfig() {
   strategyItems.forEach((item) => {
     const checkbox = item.querySelector(".strategy-checkbox");
     if (checkbox.checked) {
-      selectedStrategies.push(parseInt(checkbox.value));
+      selectedStrategies.push(checkbox.value);
     }
   });
 
@@ -265,6 +291,12 @@ async function saveConfig() {
     return;
   }
 
+  // Get domain type from radio buttons
+  const domainTypeRadio = document.querySelector(
+    'input[name="domain-type"]:checked'
+  );
+  const domainType = domainTypeRadio ? domainTypeRadio.value : "full";
+
   const config = {
     enableAutoGroup: document.getElementById("enable-auto-group").checked,
     groupTabNum: parseInt(document.getElementById("group-tab-num").value) || 1,
@@ -272,14 +304,15 @@ async function saveConfig() {
     inheritParentGroup: document.getElementById("inherit-parent-group").checked,
     groupStrategy: selectedStrategies,
     configuration: {
-      fallback: document.getElementById("fallback-strategy").value,
-      rules: rules,
+      domainType: domainType,
       secDomainIgnoreTld: document.getElementById("sec-domain-ignore-tld")
         .checked,
+      fallback: document.getElementById("fallback-strategy").value,
+      rules: rules,
     },
   };
 
-  if (selectedStrategies.includes(3)) {
+  if (selectedStrategies.includes("custom")) {
     for (let i = 0; i < rules.length; i++) {
       if (!rules[i].name || rules[i].name.trim() === "") {
         showStatus(`Rule ${i + 1} is missing a name`, "error");
@@ -308,12 +341,13 @@ async function resetConfig() {
     enableAutoGroup: true,
     groupTabNum: 1,
     autoUngroup: false,
-    groupStrategy: [1, 2, 3],
+    groupStrategy: ["domain", "custom"],
     inheritParentGroup: true,
     configuration: {
+      domainType: "full",
+      secDomainIgnoreTld: false,
       fallback: "none",
       rules: [],
-      secDomainIgnoreTld: false,
     },
   };
 

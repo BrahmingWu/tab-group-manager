@@ -169,15 +169,18 @@ body {
 }
 
 .strategy-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
   background: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   cursor: move;
   transition: all 0.2s;
+}
+
+.strategy-item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
 }
 
 .strategy-item:hover {
@@ -234,6 +237,50 @@ body {
 .strategy-desc {
   font-size: 12px;
   color: #666;
+}
+
+.strategy-sub-options {
+  padding: 0 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.radio-option:hover {
+  background: #f5f5f5;
+}
+
+.radio-option input[type="radio"] {
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: #4caf50;
+}
+
+.radio-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.radio-label {
+  font-weight: 500;
+  font-size: 13px;
+  color: #333;
+}
+
+.radio-desc {
+  font-size: 11px;
+  color: #888;
 }
 
 .rules-header {
@@ -417,9 +464,13 @@ body {
 }
 
 .settings-subsection {
-  margin-top: 12px;
-  padding: 12px;
+  padding: 10px;
   background: #f9f9f9;
   border-radius: 6px;
   border: 1px solid #eee;
+}
+
+/* When inside strategy-sub-options, add some top margin */
+.strategy-sub-options .settings-subsection {
+  margin-top: 4px;
 }

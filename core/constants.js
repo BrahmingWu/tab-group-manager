@@ -1,7 +1,6 @@
 export const STRATEGY_LABELS = {
-  1: "Domain",
-  2: "Secondary Domain",
-  3: "Custom Rules",
+  "domain": "By Domain",
+  "custom": "Custom Rules",
 };
 
 export const COLORS = [
@@ -17,10 +16,10 @@ export const COLORS = [
 ];
 
 export const STRATEGY_IDS = {
-  DOMAIN: 1,
-  SEC_DOMAIN: 2,
-  CUSTOM: 3,
+  DOMAIN: "domain",
+  CUSTOM: "custom",
 };
 
+export const VALID_DOMAIN_TYPES = ["full", "secDomain"];
 export const VALID_FALLBACKS = ["none", "domain", "secDomain"];
 export const VALID_MATCH_TYPES = ["domain", "url"];

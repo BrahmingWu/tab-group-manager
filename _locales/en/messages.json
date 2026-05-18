@@ -52,20 +52,12 @@
     "description": "Section heading for grouping strategy"
   },
   "strategy_domain": {
-    "message": "Domain",
-    "description": "Strategy name for domain grouping"
+    "message": "By Domain",
+    "description": "Strategy category for domain grouping"
   },
   "strategy_domain_desc": {
-    "message": "Group by full domain (e.g., github.com, gitlab.com)",
-    "description": "Description for domain strategy"
-  },
-  "strategy_sec_domain": {
-    "message": "Secondary Domain",
-    "description": "Strategy name for secondary domain grouping"
-  },
-  "strategy_sec_domain_desc": {
-    "message": "Group by second-level domain (e.g., github.com from user.github.com)",
-    "description": "Description for secondary domain strategy"
+    "message": "Group tabs by domain name for automatic grouping",
+    "description": "Description for domain strategy category"
   },
   "strategy_custom": {
     "message": "Custom Rules",
@@ -74,6 +66,22 @@
   "strategy_custom_desc": {
     "message": "Define your own grouping rules with patterns",
     "description": "Description for custom rules strategy"
+  },
+  "domain_type_full": {
+    "message": "Full Domain",
+    "description": "Radio option: group by full domain"
+  },
+  "domain_type_full_desc": {
+    "message": "Group by complete domain (e.g. github.com, gitlab.com)",
+    "description": "Description for full domain option"
+  },
+  "domain_type_sec_domain": {
+    "message": "Secondary Domain",
+    "description": "Radio option: group by secondary domain"
+  },
+  "domain_type_sec_domain_desc": {
+    "message": "Group by second-level domain (e.g. github.com from user.github.com)",
+    "description": "Description for secondary domain option"
   },
   "fallback_strategy": {
     "message": "Fallback Strategy",

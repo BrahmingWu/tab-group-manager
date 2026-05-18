@@ -18,6 +18,44 @@ class ConfigStore {
    */
   async init() {
     const result = await storageGet(DEFAULT_CONFIG);
+
+    // Migrate old numeric strategy IDs (1,2,3) to new string IDs ("domain","custom")
+    if (
+      result.groupStrategy &&
+      result.groupStrategy.length > 0 &&
+      typeof result.groupStrategy[0] === "number"
+    ) {
+      const oldStrategy = result.groupStrategy;
+      const newStrategy = [];
+      const hasDomain = oldStrategy.includes(1) || oldStrategy.includes(2);
+      const hasCustom = oldStrategy.includes(3);
+
+      if (hasDomain) newStrategy.push("domain");
+      if (hasCustom) newStrategy.push("custom");
+
+      // Preserve relative ordering: if custom was before domain in old array, swap
+      const domainFirst =
+        oldStrategy.indexOf(1) < oldStrategy.indexOf(3) &&
+        oldStrategy.indexOf(2) < oldStrategy.indexOf(3);
+
+      result.groupStrategy = domainFirst
+        ? newStrategy // already ["domain", "custom"]
+        : [...newStrategy].reverse();
+
+      // If only secDomain was enabled (strategy 2) without domain (strategy 1), set domainType to secDomain
+      if (oldStrategy.includes(2) && !oldStrategy.includes(1)) {
+        if (!result.configuration) result.configuration = {};
+        result.configuration.domainType = "secDomain";
+      }
+
+      console.log(
+        "[TabGroupManager] Migrated groupStrategy from",
+        oldStrategy,
+        "to",
+        result.groupStrategy
+      );
+    }
+
     this.#config = {
       ...DEFAULT_CONFIG,
       ...result,

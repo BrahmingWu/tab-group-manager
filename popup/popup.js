@@ -61,7 +61,14 @@ function updateUI(config) {
 
   toggleEl.checked = config.enableAutoGroup;
   const strategyNames = config.groupStrategy
-    .map((s) => STRATEGY_LABELS[s])
+    .map((s) => {
+      let name = STRATEGY_LABELS[s] || s;
+      if (s === "domain" && config.configuration?.domainType) {
+        const typeLabel = config.configuration.domainType === "secDomain" ? "Secondary" : "Full";
+        name = `By Domain (${typeLabel})`;
+      }
+      return name;
+    })
     .join(", ");
   strategyDisplay.textContent = strategyNames || "None";
 }

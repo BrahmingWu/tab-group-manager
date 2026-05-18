@@ -6,15 +6,15 @@
 import { STRATEGY_MAP, getFallbackStrategy } from "./strategies.js";
 
 export function resolveStrategy(config) {
-  const strategies = config.groupStrategy || [1];
+  const strategies = config.groupStrategy || ["domain"];
 
   if (strategies.length === 1) {
-    const strategy = STRATEGY_MAP[strategies[0]] || STRATEGY_MAP[1];
+    const strategy = STRATEGY_MAP[strategies[0]] || STRATEGY_MAP["domain"];
     const fallbackStrategy = getFallbackStrategy(
       config.configuration?.fallback || "none",
     );
 
-    if (strategies[0] === 3) {
+    if (strategies[0] === "custom") {
       return wrapCustomWithFallback(strategy, fallbackStrategy, config);
     }
 

@@ -1,15 +1,16 @@
-import { COLORS, VALID_FALLBACKS, VALID_MATCH_TYPES } from "../core/constants.js";
+import { COLORS, VALID_DOMAIN_TYPES, VALID_FALLBACKS, VALID_MATCH_TYPES } from "../core/constants.js";
 
 export const DEFAULT_CONFIG = {
   enableAutoGroup: true,
   groupTabNum: 1,
   autoUngroup: false,
-  groupStrategy: [1, 2, 3],
+  groupStrategy: ["domain", "custom"],
   inheritParentGroup: true,
   configuration: {
+    domainType: "full",
+    secDomainIgnoreTld: false,
     fallback: "none",
     rules: [],
-    secDomainIgnoreTld: false,
   },
 };
 
@@ -41,10 +42,10 @@ export function validateConfig(config) {
   } else if (config.groupStrategy.length === 0) {
     errors.push("groupStrategy must not be empty");
   } else {
-    const validStrategies = [1, 2, 3];
+    const validStrategies = ["domain", "custom"];
     config.groupStrategy.forEach((strategy, index) => {
       if (!validStrategies.includes(strategy)) {
-        errors.push(`groupStrategy[${index}] must be 1, 2, or 3`);
+        errors.push(`groupStrategy[${index}] must be one of: ${validStrategies.join(", ")}`);
       }
     });
   }
@@ -64,6 +65,10 @@ export function validateConfig(config) {
 
     if (typeof config.configuration.secDomainIgnoreTld !== "boolean") {
       errors.push("configuration.secDomainIgnoreTld must be a boolean");
+    }
+
+    if (typeof config.configuration?.domainType !== "string" || !VALID_DOMAIN_TYPES.includes(config.configuration.domainType)) {
+      errors.push(`configuration.domainType must be one of: ${VALID_DOMAIN_TYPES.join(", ")}`);
     }
 
     if (!Array.isArray(config.configuration.rules)) {
