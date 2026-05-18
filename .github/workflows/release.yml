@@ -22,6 +22,14 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Get tag annotation
+        id: tag_msg
+        run: |
+          TAG_BODY=$(git tag -l --format='%(contents)' ${{ github.ref_name }})
+          echo 'TAG_BODY<<EOF' >> $GITHUB_OUTPUT
+          echo "$TAG_BODY" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+
       - name: Build and Package Extension
         run: |
           zip -r tab-group-manager-v${{ steps.version.outputs.VERSION }}.zip \
@@ -41,7 +49,11 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
-          generate_release_notes: true
+          body: |
+            ${{ steps.tag_msg.outputs.TAG_BODY }}
+
+            ---
+            **Version**: ${{ steps.version.outputs.VERSION }}
           files: |
             tab-group-manager-v${{ steps.version.outputs.VERSION }}.zip
         env:
